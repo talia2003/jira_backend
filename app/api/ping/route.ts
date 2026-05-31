@@ -1,45 +1,27 @@
-const ALLOWED_ORIGINS = [
-    "http://localhost:5173", // your React dev server (Vite default)
-    "http://localhost:3000", // optional if you test same-origin
-    "https://jira-kohl.vercel.app", // production client on Vercel
-  ];
+import { handleGetPing } from './handlers/getPing'
+import { handleOptionsPing } from './handlers/optionsPing'
+import { handlePostPing } from './handlers/postPing'
 
-  const ALLOWED_ORIGIN_PATTERNS = [
-    // Vercel preview deployments for this project (any branch / PR)
-    /^https:\/\/jira-kohl-[a-z0-9-]+\.vercel\.app$/,
-  ];
-
-  function isAllowedOrigin(origin: string) {
-    if (ALLOWED_ORIGINS.includes(origin)) return true;
-    return ALLOWED_ORIGIN_PATTERNS.some((pattern) => pattern.test(origin));
-  }
-
-  function corsHeaders(origin: string | undefined) {
-    const headers = new Headers();
-    if (origin && isAllowedOrigin(origin)) {
-        headers.set("Access-Control-Allow-Origin", origin);
-        headers.set("Vary", "Origin");
-    }
-    headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    headers.set("Access-Control-Allow-Headers", "Content-Type");
-    return headers;
-  }
-
+  /**
+   * Handles CORS preflight requests from the browser.
+   * Returns allowed methods and headers for cross-origin calls from the frontend.
+   */
   export function OPTIONS(request: Request) {
-    const origin = request.headers.get("origin");
-    return new Response(null, { status: 204, headers: corsHeaders(origin ?? undefined)});
+    return handleOptionsPing(request)
   }
 
+  /**
+   * Health check for the API and frontend connectivity.
+   * Returns a pong message and timestamp; includes CORS headers for allowed origins.
+   */
   export function GET(request: Request) {
-    const origin = request.headers.get("origin");
-    return Response.json({ ok: true, message: "pong", timestamp: new Date().toISOString() },
-        { headers: corsHeaders(origin ?? undefined) });
+    return handleGetPing(request)
   }
 
+  /**
+   * Echoes the request body back in the response (for testing POST from Postman or the client).
+   * Useful to verify JSON parsing and CORS on write requests.
+   */
   export async function POST(request: Request) {
-    const origin = request.headers.get("origin");
-    const body = await request.json().catch(() => null);
-
-    return Response.json({ ok: true, message: "pong", youSent: body },
-        { headers: corsHeaders(origin ?? undefined) });
+    return handlePostPing(request)
   }

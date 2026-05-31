@@ -1,24 +1,21 @@
 import { getSupabase } from '@/lib/supabaseAdmin'
 
-/**
- * Verifies Supabase connectivity by reading from the smoke_test table.
- * Returns up to 20 rows ordered by newest first, or an error if the DB is unreachable.
- */
-export async function GET() {
+export async function handleGetBoards() {
   try {
     const supabase = getSupabase()
     const { data, error } = await supabase
-      .from('smoke_test')
+      .from('boards')
       .select('*')
       .order('created_at', { ascending: false })
-      .limit(20)
 
     if (error) {
       return Response.json({ error: error.message }, { status: 500 })
     }
-    return Response.json({ rows: data ?? [] })
+
+    return Response.json({ boards: data ?? [] })
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Unknown error'
     return Response.json({ error: message }, { status: 500 })
   }
 }
+
