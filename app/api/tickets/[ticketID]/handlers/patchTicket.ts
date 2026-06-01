@@ -1,4 +1,5 @@
 import { getSupabase } from '@/lib/supabaseAdmin'
+import { getOrigin, jsonResponse } from '@/lib/cors'
 
 export async function handlePatchTicket(
   request: Request,
@@ -7,6 +8,7 @@ export async function handlePatchTicket(
   try {
     const supabase = getSupabase()
     const { ticketID } = await params
+    const origin = getOrigin(request)
     const body = await request.json()
 
     const updates: Record<string, unknown> = {}
@@ -15,7 +17,7 @@ export async function handlePatchTicket(
     if (body.position !== undefined) updates.position = body.position
 
     if (Object.keys(updates).length === 0) {
-      return Response.json({ error: 'No valid fields to update' }, { status: 400 })
+      return jsonResponse({ error: 'No valid fields to update' }, 400, origin)
     }
 
     const { data: ticket, error } = await supabase
@@ -26,13 +28,12 @@ export async function handlePatchTicket(
       .single()
 
     if (error) {
-      return Response.json({ error: error.message }, { status: 500 })
+      return jsonResponse({ error: error.message }, 500, origin)
     }
 
-    return Response.json({ ticket }, { status: 200 })
+    return jsonResponse({ ticket }, 200, origin)
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Unknown error'
-    return Response.json({ error: message }, { status: 500 })
+    return jsonResponse({ error: message }, 500, getOrigin(request))
   }
 }
-

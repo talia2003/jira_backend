@@ -1,19 +1,23 @@
 import { getSupabase } from '@/lib/supabaseAdmin'
+import { getOrigin, jsonResponse } from '@/lib/cors'
 
-export async function handleDeleteTicket(params: Promise<{ ticketID: string }>) {
+export async function handleDeleteTicket(
+  request: Request,
+  params: Promise<{ ticketID: string }>,
+) {
   try {
     const supabase = getSupabase()
     const { ticketID } = await params
+    const origin = getOrigin(request)
 
     const { error } = await supabase.from('tickets').delete().eq('id', ticketID)
     if (error) {
-      return Response.json({ error: error.message }, { status: 500 })
+      return jsonResponse({ error: error.message }, 500, origin)
     }
 
-    return Response.json({ ok: true }, { status: 200 })
+    return jsonResponse({ ok: true }, 200, origin)
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Unknown error'
-    return Response.json({ error: message }, { status: 500 })
+    return jsonResponse({ error: message }, 500, getOrigin(request))
   }
 }
-
