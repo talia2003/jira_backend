@@ -7,3 +7,4 @@ export function handleOptionsPing(request: Request) {
     headers: corsHeaders(origin ?? undefined),
   })
 }
+

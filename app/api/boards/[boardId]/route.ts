@@ -1,5 +1,4 @@
 import { handleGetBoardById } from './handlers/getBoardById'
-import { getOrigin, optionsResponse } from '@/lib/cors'
 
 /**
  * Fetches a single board with all its columns and tickets.
@@ -8,12 +7,7 @@ import { getOrigin, optionsResponse } from '@/lib/cors'
  * @returns `{ board, columns, tickets }` or 404 if the board does not exist
  */
 export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ boardId: string }> },
-) {
-  return handleGetBoardById(request, params)
-}
-
-export function OPTIONS(request: Request) {
-  return optionsResponse(getOrigin(request))
+    request: Request,
+     { params }: { params: Promise<{ boardId: string }> }) {
+  return handleGetBoardById(params)
 }

@@ -1,14 +1,9 @@
 import { getSupabase } from '@/lib/supabaseAdmin'
-import { getOrigin, jsonResponse } from '@/lib/cors'
 
-export async function handleGetBoardById(
-  request: Request,
-  params: Promise<{ boardId: string }>,
-) {
+export async function handleGetBoardById(params: Promise<{ boardId: string }>) {
   try {
     const supabase = getSupabase()
     const { boardId } = await params
-    const origin = getOrigin(request)
 
     const [boardResult, columnsResult, ticketsResult] = await Promise.all([
       supabase.from('boards').select('*').eq('id', boardId).single(),
@@ -18,22 +13,23 @@ export async function handleGetBoardById(
 
     const { data: board, error: boardError } = boardResult
     if (boardError) {
-      return jsonResponse({ error: boardError.message }, 404, origin)
+      return Response.json({ error: boardError.message }, { status: 404 })
     }
 
     const { data: columns, error: colError } = columnsResult
     if (colError) {
-      return jsonResponse({ error: colError.message }, 500, origin)
+      return Response.json({ error: colError.message }, { status: 500 })
     }
 
     const { data: tickets, error: tickError } = ticketsResult
     if (tickError) {
-      return jsonResponse({ error: tickError.message }, 500, origin)
+      return Response.json({ error: tickError.message }, { status: 500 })
     }
 
-    return jsonResponse({ board, columns, tickets }, 200, origin)
+    return Response.json({ board, columns, tickets }, { status: 200 })
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Unknown error'
-    return jsonResponse({ error: message }, 500, getOrigin(request))
+    return Response.json({ error: message }, { status: 500 })
   }
 }
+

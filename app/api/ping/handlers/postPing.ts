@@ -9,3 +9,4 @@ export async function handlePostPing(request: Request) {
     { headers: corsHeaders(origin ?? undefined) },
   )
 }
+
