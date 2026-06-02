@@ -1,10 +1,8 @@
 import { getSupabase } from '@/lib/supabaseAdmin'
-import { getOrigin, jsonResponse } from '@/lib/cors'
 
-export async function handleGetBoards(request: Request) {
+export async function handleGetBoards() {
   try {
     const supabase = getSupabase()
-    const origin = getOrigin(request)
 
     const { data, error } = await supabase
       .from('boards')
@@ -12,12 +10,12 @@ export async function handleGetBoards(request: Request) {
       .order('created_at', { ascending: false })
 
     if (error) {
-      return jsonResponse({ error: error.message }, 500, origin)
+      return Response.json({ error: error.message }, { status: 500 })
     }
 
-    return jsonResponse({ boards: data ?? [] }, 200, origin)
+    return Response.json({ boards: data ?? [] })
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Unknown error'
-    return jsonResponse({ error: message }, 500, getOrigin(request))
+    return Response.json({ error: message }, { status: 500 })
   }
 }

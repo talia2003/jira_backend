@@ -1,5 +1,4 @@
 import { handlePostTicket } from './handlers/postTicket'
-import { getOrigin, optionsResponse } from '@/lib/cors'
 
 /**
  * Creates a new ticket in the given column at the bottom of that column's list.
@@ -9,8 +8,4 @@ import { getOrigin, optionsResponse } from '@/lib/cors'
  */
 export async function POST(request: Request) {
   return handlePostTicket(request)
-}
-
-export function OPTIONS(request: Request) {
-  return optionsResponse(getOrigin(request))
 }

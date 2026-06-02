@@ -1,13 +1,12 @@
 import { handleGetBoards } from './handlers/getBoards'
 import { handlePostBoards } from './handlers/postBoards'
-import { getOrigin, optionsResponse } from '@/lib/cors'
 
 /**
  * Lists all boards, newest first.
  * @returns `{ boards: Board[] }` — each board has id, name, created_at
  */
-export async function GET(request: Request) {
-  return handleGetBoards(request)
+export async function GET() {
+  return handleGetBoards()
 }
 
 /**
@@ -17,8 +16,4 @@ export async function GET(request: Request) {
  */
 export async function POST(request: Request) {
   return handlePostBoards(request)
-}
-
-export function OPTIONS(request: Request) {
-  return optionsResponse(getOrigin(request))
 }

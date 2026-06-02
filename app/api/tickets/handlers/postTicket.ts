@@ -1,17 +1,14 @@
 import { getSupabase } from '@/lib/supabaseAdmin'
-import { getOrigin, jsonResponse } from '@/lib/cors'
 
 export async function handlePostTicket(request: Request) {
   try {
     const supabase = getSupabase()
-    const origin = getOrigin(request)
     const body = await request.json()
 
     if (!body.board_id || !body.column_id || !body.title) {
-      return jsonResponse(
+      return Response.json(
         { error: 'board_id, column_id and title are required' },
-        400,
-        origin,
+        { status: 400 },
       )
     }
 
@@ -37,12 +34,12 @@ export async function handlePostTicket(request: Request) {
       .single()
 
     if (error) {
-      return jsonResponse({ error: error.message }, 500, origin)
+      return Response.json({ error: error.message }, { status: 500 })
     }
 
-    return jsonResponse({ ticket }, 201, origin)
+    return Response.json({ ticket }, { status: 201 })
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Unknown error'
-    return jsonResponse({ error: message }, 500, getOrigin(request))
+    return Response.json({ error: message }, { status: 500 })
   }
 }

@@ -1,10 +1,5 @@
-import { getOrigin, optionsResponse } from '@/lib/cors'
 import { handleDeleteTicket } from './handlers/deleteTicket'
 import { handlePatchTicket } from './handlers/patchTicket'
-
-export function OPTIONS(request: Request) {
-  return optionsResponse(getOrigin(request))
-}
 
 /**
  * Partially updates a ticket. Only fields sent in the body are changed.
@@ -25,8 +20,8 @@ export async function PATCH(
  * @returns `{ ok: true }` on success
  */
 export async function DELETE(
-  request: Request,
+  _request: Request,
   { params }: { params: Promise<{ ticketID: string }> },
 ) {
-  return handleDeleteTicket(request, params)
+  return handleDeleteTicket(params)
 }
