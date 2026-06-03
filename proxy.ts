@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { corsHeaders, isAllowedOrigin } from '@/lib/cors'
+import { corsHeaders } from '@/lib/cors'
 
 function applyCors(response: NextResponse, origin: string | undefined) {
   for (const [key, value] of corsHeaders(origin)) {
