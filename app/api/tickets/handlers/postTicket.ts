@@ -43,4 +43,3 @@ export async function handlePostTicket(request: Request) {
     return Response.json({ error: message }, { status: 500 })
   }
 }
-

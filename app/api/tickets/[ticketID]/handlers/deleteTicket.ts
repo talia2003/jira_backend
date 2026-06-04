@@ -10,10 +10,9 @@ export async function handleDeleteTicket(params: Promise<{ ticketID: string }>) 
       return Response.json({ error: error.message }, { status: 500 })
     }
 
-    return Response.json({ ok: true }, { status: 200 })
+    return Response.json({ ok: true })
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Unknown error'
     return Response.json({ error: message }, { status: 500 })
   }
 }
-

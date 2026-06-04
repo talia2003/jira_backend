@@ -29,10 +29,9 @@ export async function handlePatchTicket(
       return Response.json({ error: error.message }, { status: 500 })
     }
 
-    return Response.json({ ticket }, { status: 200 })
+    return Response.json({ ticket })
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Unknown error'
     return Response.json({ error: message }, { status: 500 })
   }
 }
-

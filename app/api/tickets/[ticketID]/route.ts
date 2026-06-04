@@ -8,9 +8,9 @@ import { handlePatchTicket } from './handlers/patchTicket'
  * @returns `{ ticket }` with the updated row, or 400 if no valid fields were sent
  */
 export async function PATCH(
-    request: Request,
-    { params }: { params: Promise<{ ticketID: string}>}
-){
+  request: Request,
+  { params }: { params: Promise<{ ticketID: string }> },
+) {
   return handlePatchTicket(request, params)
 }
 
@@ -20,8 +20,8 @@ export async function PATCH(
  * @returns `{ ok: true }` on success
  */
 export async function DELETE(
-    request: Request,
-    { params }: {params: Promise<{ticketID: string}>}
-){
+  _request: Request,
+  { params }: { params: Promise<{ ticketID: string }> },
+) {
   return handleDeleteTicket(params)
 }

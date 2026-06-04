@@ -3,6 +3,7 @@ import { getSupabase } from '@/lib/supabaseAdmin'
 export async function handleGetBoards() {
   try {
     const supabase = getSupabase()
+
     const { data, error } = await supabase
       .from('boards')
       .select('*')
@@ -18,4 +19,3 @@ export async function handleGetBoards() {
     return Response.json({ error: message }, { status: 500 })
   }
 }
-

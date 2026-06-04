@@ -26,10 +26,9 @@ export async function handleGetBoardById(params: Promise<{ boardId: string }>) {
       return Response.json({ error: tickError.message }, { status: 500 })
     }
 
-    return Response.json({ board, columns, tickets }, { status: 200 })
+    return Response.json({ board, columns, tickets })
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Unknown error'
     return Response.json({ error: message }, { status: 500 })
   }
 }
-

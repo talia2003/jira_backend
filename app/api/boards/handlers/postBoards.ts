@@ -37,4 +37,3 @@ export async function handlePostBoards(request: Request) {
     return Response.json({ error: message }, { status: 500 })
   }
 }
-

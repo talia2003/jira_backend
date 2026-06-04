@@ -7,7 +7,8 @@ import { handleGetBoardById } from './handlers/getBoardById'
  * @returns `{ board, columns, tickets }` or 404 if the board does not exist
  */
 export async function GET(
-    request: Request,
-     { params }: { params: Promise<{ boardId: string }> }) {
+  _request: Request,
+  { params }: { params: Promise<{ boardId: string }> },
+) {
   return handleGetBoardById(params)
 }

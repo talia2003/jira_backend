@@ -6,6 +6,6 @@ import { handlePostTicket } from './handlers/postTicket'
  * @param request - JSON body: `{ board_id, column_id, title }` (all required)
  * @returns `{ ticket }` with status 201, or 400 if any field is missing
  */
-export async function POST(request: Request){
+export async function POST(request: Request) {
   return handlePostTicket(request)
 }
