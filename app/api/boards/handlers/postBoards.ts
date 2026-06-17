@@ -1,8 +1,13 @@
 import { getSupabase } from '@/lib/supabaseAdmin'
 import { DEFAULT_COLUMN_TEMPLATES } from '../constants/defaultColumns'
+import { getAuthUser } from '@/lib/getAuthUser'
 
 export async function handlePostBoards(request: Request) {
   try {
+    const { user, error: authError } = await getAuthUser(request)
+    if (!user){
+      return Response.json({ error: authError ?? 'Unauthorized' }, { status: 401 })
+    }
     const supabase = getSupabase()
     const body = await request.json()
 
@@ -12,7 +17,7 @@ export async function handlePostBoards(request: Request) {
 
     const { data: board, error: boardError } = await supabase
       .from('boards')
-      .insert({ name: body.name })
+      .insert({ name: body.name, owner_id: user.id })
       .select()
       .single()
 

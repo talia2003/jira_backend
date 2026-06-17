@@ -1,7 +1,12 @@
+import { getAuthUser } from '@/lib/getAuthUser'
 import { getSupabase } from '@/lib/supabaseAdmin'
 
-export async function handleGetBoardById(params: Promise<{ boardId: string }>) {
+export async function handleGetBoardById(request: Request, params: Promise<{ boardId: string }>) {
   try {
+    const { user, error: authError } = await getAuthUser(request)
+    if (!user){
+      return Response.json({ error: authError ?? 'Unauthorized' }, { status: 401 })
+    }
     const supabase = getSupabase()
     const { boardId } = await params
 
@@ -10,6 +15,10 @@ export async function handleGetBoardById(params: Promise<{ boardId: string }>) {
       supabase.from('columns').select('*').eq('board_id', boardId).order('position'),
       supabase.from('tickets').select('*').eq('board_id', boardId).order('position'),
     ])
+
+    if (boardResult.data?.owner_id !== user.id) {
+      return Response.json({ error: 'Forbidden' }, { status: 403 })
+    }
 
     const { data: board, error: boardError } = boardResult
     if (boardError) {

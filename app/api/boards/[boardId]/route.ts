@@ -10,5 +10,5 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ boardId: string }> },
 ) {
-  return handleGetBoardById(params)
+  return handleGetBoardById(_request, params)
 }

@@ -5,8 +5,8 @@ import { handlePostBoards } from './handlers/postBoards'
  * Lists all boards, newest first.
  * @returns `{ boards: Board[] }` — each board has id, name, created_at
  */
-export async function GET() {
-  return handleGetBoards()
+export async function GET(request: Request) {
+  return handleGetBoards(request)
 }
 
 /**

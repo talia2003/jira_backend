@@ -1,12 +1,18 @@
+import { getAuthUser } from '@/lib/getAuthUser'
 import { getSupabase } from '@/lib/supabaseAdmin'
 
-export async function handleGetBoards() {
+export async function handleGetBoards(request: Request) {
   try {
+    const { user, error: authError } = await getAuthUser(request)
+    if (!user){
+      return Response.json({ error: authError ?? 'Unauthorized' }, { status: 401 })
+    }
     const supabase = getSupabase()
 
     const { data, error } = await supabase
       .from('boards')
       .select('*')
+      .eq('owner_id', user.id)
       .order('created_at', { ascending: false })
 
     if (error) {
