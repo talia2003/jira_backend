@@ -1,29 +1,30 @@
-import { getAuthUser } from '@/lib/getAuthUser'
 import { getSupabase } from '@/lib/supabaseAdmin'
+import { getUserId } from '@/lib/getUserId'
 
 export async function handleGetBoardById(request: Request, params: Promise<{ boardId: string }>) {
   try {
-    const { user, error: authError } = await getAuthUser(request)
-    if (!user){
-      return Response.json({ error: authError ?? 'Unauthorized' }, { status: 401 })
-    }
+    const userId = getUserId(request)
     const supabase = getSupabase()
     const { boardId } = await params
 
-    const [boardResult, columnsResult, ticketsResult] = await Promise.all([
-      supabase.from('boards').select('*').eq('id', boardId).single(),
-      supabase.from('columns').select('*').eq('board_id', boardId).order('position'),
-      supabase.from('tickets').select('*').eq('board_id', boardId).order('position'),
-    ])
+    const { data: board, error: boardError } = await supabase
+      .from('boards')
+      .select('*')
+      .eq('id', boardId)
+      .single()
 
-    if (boardResult.data?.owner_id !== user.id) {
+    if (boardError || !board) {
+      return Response.json({ error: 'Board not found' }, { status: 404 })
+    }
+
+    if (board.owner_id !== userId) {
       return Response.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    const { data: board, error: boardError } = boardResult
-    if (boardError) {
-      return Response.json({ error: boardError.message }, { status: 404 })
-    }
+    const [columnsResult, ticketsResult] = await Promise.all([
+      supabase.from('columns').select('*').eq('board_id', boardId).order('position'),
+      supabase.from('tickets').select('*').eq('board_id', boardId).order('position'),
+    ])
 
     const { data: columns, error: colError } = columnsResult
     if (colError) {
@@ -35,7 +36,7 @@ export async function handleGetBoardById(request: Request, params: Promise<{ boa
       return Response.json({ error: tickError.message }, { status: 500 })
     }
 
-    return Response.json({ board, columns, tickets })
+    return Response.json({ board, columns: columns ?? [], tickets: tickets ?? [] })
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Unknown error'
     return Response.json({ error: message }, { status: 500 })
