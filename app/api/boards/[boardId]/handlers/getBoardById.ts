@@ -11,14 +11,11 @@ export async function handleGetBoardById(request: Request, params: Promise<{ boa
       .from('boards')
       .select('*')
       .eq('id', boardId)
+      .eq('owner_id', userId)
       .single()
 
     if (boardError || !board) {
       return Response.json({ error: 'Board not found' }, { status: 404 })
-    }
-
-    if (board.owner_id !== userId) {
-      return Response.json({ error: 'Forbidden' }, { status: 403 })
     }
 
     const [columnsResult, ticketsResult] = await Promise.all([
