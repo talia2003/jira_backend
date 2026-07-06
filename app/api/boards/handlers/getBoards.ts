@@ -1,12 +1,14 @@
 import { getSupabase } from '@/lib/supabaseAdmin'
-
-export async function handleGetBoards() {
+import { getUserId } from '@/lib/getUserId'
+export async function handleGetBoards(request: Request) {
   try {
+    const userId = getUserId(request)
     const supabase = getSupabase()
 
     const { data, error } = await supabase
       .from('boards')
       .select('*')
+      .eq('owner_id', userId)
       .order('created_at', { ascending: false })
 
     if (error) {

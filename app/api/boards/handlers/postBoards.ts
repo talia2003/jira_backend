@@ -1,8 +1,10 @@
 import { getSupabase } from '@/lib/supabaseAdmin'
 import { DEFAULT_COLUMN_TEMPLATES } from '../constants/defaultColumns'
+import { getUserId } from '@/lib/getUserId'
 
 export async function handlePostBoards(request: Request) {
   try {
+    const userId = getUserId(request)
     const supabase = getSupabase()
     const body = await request.json()
 
@@ -12,7 +14,7 @@ export async function handlePostBoards(request: Request) {
 
     const { data: board, error: boardError } = await supabase
       .from('boards')
-      .insert({ name: body.name })
+      .insert({ name: body.name, owner_id: userId })
       .select()
       .single()
 

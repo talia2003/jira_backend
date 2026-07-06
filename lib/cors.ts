@@ -21,6 +21,6 @@ export function corsHeaders(origin: string | undefined) {
     headers.set('Vary', 'Origin')
   }
   headers.set('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE, OPTIONS')
-  headers.set('Access-Control-Allow-Headers', 'Content-Type')
+  headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization')
   return headers
 }
