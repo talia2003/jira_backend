@@ -2,7 +2,7 @@ import { getSupabase } from '@/lib/supabaseAdmin'
 import { getUserId } from '@/lib/getUserId'
 export async function handleGetBoards(request: Request) {
   try {
-    const userId = getUserId(request)
+    const userId = await getUserId(request)
     const supabase = getSupabase()
 
     const { data, error } = await supabase

@@ -1,4 +1,5 @@
 import { handleGetBoardById } from './handlers/getBoardById'
+import { corsPreflight, withCors } from '@/lib/cors'
 
 /**
  * Fetches a single board with all its columns and tickets.
@@ -10,5 +11,10 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ boardId: string }> },
 ) {
-  return handleGetBoardById(_request, params)
+  const res = await handleGetBoardById(_request, params)
+  return withCors(_request, res, { allowVercelPreview: true })
+}
+
+export function OPTIONS(request: Request) {
+  return corsPreflight(request, { allowVercelPreview: true })
 }

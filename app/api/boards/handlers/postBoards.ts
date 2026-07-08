@@ -4,7 +4,7 @@ import { getUserId } from '@/lib/getUserId'
 
 export async function handlePostBoards(request: Request) {
   try {
-    const userId = getUserId(request)
+    const userId = await getUserId(request)
     const supabase = getSupabase()
     const body = await request.json()
 
