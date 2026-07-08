@@ -10,7 +10,7 @@ function isPublicPath(pathname: string): boolean {
 }
 
 function applyCors(response: NextResponse, origin: string | undefined) {
-  for (const [key, value] of corsHeaders(origin)) {
+  for (const [key, value] of corsHeaders(origin, { allowVercelPreview: true })) {
     response.headers.set(key, value)
   }
   return response
@@ -21,7 +21,7 @@ export async function proxy(request: NextRequest) {
 
   if (request.method === 'OPTIONS') {
     const headers: Record<string, string> = {}
-    for (const [key, value] of corsHeaders(origin)) {
+    for (const [key, value] of corsHeaders(origin, { allowVercelPreview: true })) {
       headers[key] = value
     }
     return NextResponse.json({}, { headers })

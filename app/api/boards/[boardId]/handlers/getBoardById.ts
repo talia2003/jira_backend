@@ -3,7 +3,7 @@ import { getUserId } from '@/lib/getUserId'
 
 export async function handleGetBoardById(request: Request, params: Promise<{ boardId: string }>) {
   try {
-    const userId = getUserId(request)
+    const userId = await getUserId(request)
     const supabase = getSupabase()
     const { boardId } = await params
 

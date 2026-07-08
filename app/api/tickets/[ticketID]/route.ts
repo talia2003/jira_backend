@@ -1,5 +1,6 @@
 import { handleDeleteTicket } from './handlers/deleteTicket'
 import { handlePatchTicket } from './handlers/patchTicket'
+import { corsPreflight, withCors } from '@/lib/cors'
 
 /**
  * Partially updates a ticket. Only fields sent in the body are changed.
@@ -11,7 +12,8 @@ export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ ticketID: string }> },
 ) {
-  return handlePatchTicket(request, params)
+  const res = await handlePatchTicket(request, params)
+  return withCors(request, res, { allowVercelPreview: true })
 }
 
 /**
@@ -23,5 +25,10 @@ export async function DELETE(
   _request: Request,
   { params }: { params: Promise<{ ticketID: string }> },
 ) {
-  return handleDeleteTicket(params)
+  const res = await handleDeleteTicket(params)
+  return withCors(_request, res, { allowVercelPreview: true })
+}
+
+export function OPTIONS(request: Request) {
+  return corsPreflight(request, { allowVercelPreview: true })
 }
